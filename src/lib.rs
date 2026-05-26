@@ -9,6 +9,7 @@ mod frame;
 mod gpu;
 mod ids;
 mod metering;
+mod quic;
 mod router;
 mod scheduler;
 mod session;
@@ -22,11 +23,13 @@ pub use frame::{Frame, FrameKind};
 pub use gpu::GpuLease;
 pub use ids::{ClientId, FrameSeq, LeaseEpoch, SessionId, StreamId};
 pub use metering::{InMemoryMeter, MeteringEvent, MeteringSink, MeteringSnapshot, NoopMeter};
+pub use quic::{QuicClient, QuicFrameTransport, QuicResumeConnection, QuicTestServer};
 pub use router::SessionRouter;
 pub use scheduler::{GpuScheduler, PlacementRequest, StaticGpuScheduler};
 pub use session::{AcceptedFrame, OpenedSession, ResumedSession, SessionRegistry};
 pub use telemetry::{FrameSpan, FrameTracer, InMemoryFrameTracer, NoopFrameTracer, TraceContext};
 pub use transport::{
-    FrameTransport, InMemoryEndpoint, assert_transport_conformance, in_memory_transport_pair,
+    FrameTransport, InMemoryEndpoint, assert_transport_conformance,
+    assert_transport_conformance_pair, in_memory_transport_pair,
 };
 pub use wire::FrameCodec;

@@ -53,4 +53,7 @@ pub enum SessionRpcError {
 
     #[error("transport is closed")]
     TransportClosed,
+
+    #[error("transport error: {0}")]
+    Transport(String),
 }

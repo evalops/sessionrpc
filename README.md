@@ -33,6 +33,8 @@ This repository is in active bootstrap. The current crate includes:
   frame spans.
 - `FrameTransport`, `InMemoryEndpoint`, and a reusable conformance harness for
   local tests and future network transports.
+- `QuicFrameTransport` built on Quinn, including a 0-RTT resume path for flaky
+  mobile reconnects.
 
 ## Quick start
 
@@ -74,3 +76,4 @@ See [docs/architecture.md](docs/architecture.md) for the current architecture,
 [docs/transport-conformance.md](docs/transport-conformance.md) for the transport
 contract. See [docs/metering.md](docs/metering.md) for protocol-layer metering.
 See [docs/telemetry.md](docs/telemetry.md) for frame tracing.
+See [docs/quic.md](docs/quic.md) for the QUIC transport.

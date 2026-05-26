@@ -71,6 +71,10 @@ in-memory pair used for tests and examples. Network transports should preserve
 the same frame semantics: ordered frames per direction, bidirectional sending,
 explicit close/error behavior, bounded buffering, and no frame mutation.
 
+`QuicFrameTransport` is the first network implementation. It uses Quinn
+unidirectional streams to carry one encoded `Frame` per stream and exposes a
+0-RTT resume path through `QuicClient::connect_0rtt`.
+
 ## Data Flow
 
 1. A front door asks `SessionRouter` to open a session for a `PlacementRequest`.
@@ -85,7 +89,6 @@ explicit close/error behavior, bounded buffering, and no frame mutation.
 
 ## Extension Points
 
-- QUIC transport adapter for low-latency service-to-service streaming.
 - WebRTC data-channel adapter for browser or edge clients.
 - Streaming service traits for request handlers and worker-side dispatch.
 - Durable session store for multi-front-door reconnects.
