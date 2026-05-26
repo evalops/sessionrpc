@@ -50,9 +50,10 @@ the lease target that a front door should dispatch to.
 
 ### Transport
 
-The initial transport is an in-memory pair used for tests and examples. Network
-transports should preserve the same frame semantics: ordered frames per stream,
-bidirectional sending, explicit close/error behavior, and bounded buffering.
+`FrameTransport` is the transport contract. The initial implementation is an
+in-memory pair used for tests and examples. Network transports should preserve
+the same frame semantics: ordered frames per direction, bidirectional sending,
+explicit close/error behavior, bounded buffering, and no frame mutation.
 
 ## Data Flow
 
