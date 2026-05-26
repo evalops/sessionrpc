@@ -27,6 +27,8 @@ This repository is in active bootstrap. The current crate includes:
 - `Frame`, `FrameCodec`, and `FrameKind` for typed protocol frames and a binary
   wire boundary.
 - `FlowController` for explicit per-stream byte credit.
+- `MeteringSink` hooks for counting frames, payload bytes, tokens, and session
+  time at the protocol layer.
 - `FrameTransport`, `InMemoryEndpoint`, and a reusable conformance harness for
   local tests and future network transports.
 
@@ -68,4 +70,4 @@ assert_eq!(route.lease.worker_id, "worker-a");
 See [docs/architecture.md](docs/architecture.md) for the current architecture,
 [docs/wire-format.md](docs/wire-format.md) for the binary frame format, and
 [docs/transport-conformance.md](docs/transport-conformance.md) for the transport
-contract.
+contract. See [docs/metering.md](docs/metering.md) for protocol-layer metering.

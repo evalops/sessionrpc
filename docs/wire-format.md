@@ -13,7 +13,8 @@ payload. Integers are big-endian.
 | 26 | 8 | Stream id |
 | 34 | 8 | Frame sequence |
 | 42 | 8 | Lease epoch |
-| 50 | N | Payload bytes |
+| 50 | 8 | Token count, or `u64::MAX` when absent |
+| 58 | N | Payload bytes |
 
 ## Frame Kinds
 

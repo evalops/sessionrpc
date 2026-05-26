@@ -8,6 +8,7 @@ pub struct Frame {
     stream_id: StreamId,
     seq: FrameSeq,
     lease_epoch: LeaseEpoch,
+    token_count: Option<u64>,
     kind: FrameKind,
 }
 
@@ -33,6 +34,25 @@ impl Frame {
             stream_id,
             seq,
             lease_epoch,
+            token_count: None,
+            kind: FrameKind::Data(payload),
+        }
+    }
+
+    pub fn data_with_tokens(
+        session_id: SessionId,
+        stream_id: StreamId,
+        seq: FrameSeq,
+        lease_epoch: LeaseEpoch,
+        payload: Bytes,
+        token_count: u64,
+    ) -> Self {
+        Self {
+            session_id,
+            stream_id,
+            seq,
+            lease_epoch,
+            token_count: Some(token_count),
             kind: FrameKind::Data(payload),
         }
     }
@@ -49,6 +69,7 @@ impl Frame {
             stream_id,
             seq,
             lease_epoch,
+            token_count: None,
             kind,
         }
     }
@@ -71,6 +92,10 @@ impl Frame {
 
     pub fn kind(&self) -> &FrameKind {
         &self.kind
+    }
+
+    pub fn token_count(&self) -> Option<u64> {
+        self.token_count
     }
 
     pub fn payload(&self) -> Option<Bytes> {

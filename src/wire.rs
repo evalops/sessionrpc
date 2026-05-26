@@ -4,7 +4,8 @@ use crate::{Frame, FrameKind, FrameSeq, LeaseEpoch, SessionId, SessionRpcError, 
 
 const MAGIC: &[u8; 4] = b"SRP1";
 const VERSION: u8 = 1;
-const HEADER_LEN: usize = 50;
+const HEADER_LEN: usize = 58;
+const TOKEN_COUNT_NONE: u64 = u64::MAX;
 
 #[derive(Clone, Debug)]
 pub struct FrameCodec {
@@ -39,6 +40,12 @@ impl FrameCodec {
         encoded.extend_from_slice(&frame.stream_id().get().to_be_bytes());
         encoded.extend_from_slice(&frame.seq().get().to_be_bytes());
         encoded.extend_from_slice(&frame.lease_epoch().get().to_be_bytes());
+        encoded.extend_from_slice(
+            &frame
+                .token_count()
+                .unwrap_or(TOKEN_COUNT_NONE)
+                .to_be_bytes(),
+        );
         encoded.extend_from_slice(&payload);
 
         Ok(Bytes::from(encoded))
@@ -89,10 +96,21 @@ impl FrameCodec {
         let lease_epoch = LeaseEpoch::new(u64::from_be_bytes(
             encoded[42..50].try_into().expect("slice len"),
         ));
-        let payload = Bytes::copy_from_slice(&encoded[50..needed]);
+        let token_count = u64::from_be_bytes(encoded[50..58].try_into().expect("slice len"));
+        let payload = Bytes::copy_from_slice(&encoded[58..needed]);
 
         let frame = match kind {
-            0 => Frame::data(session_id, stream_id, seq, lease_epoch, payload),
+            0 if token_count == TOKEN_COUNT_NONE => {
+                Frame::data(session_id, stream_id, seq, lease_epoch, payload)
+            }
+            0 => Frame::data_with_tokens(
+                session_id,
+                stream_id,
+                seq,
+                lease_epoch,
+                payload,
+                token_count,
+            ),
             1 => Frame::control(session_id, stream_id, seq, lease_epoch, FrameKind::Cancel),
             2 => Frame::control(session_id, stream_id, seq, lease_epoch, FrameKind::Open),
             3 => Frame::control(session_id, stream_id, seq, lease_epoch, FrameKind::End),

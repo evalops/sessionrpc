@@ -21,6 +21,21 @@ fn data_frames_roundtrip_through_the_wire_codec() {
 }
 
 #[test]
+fn token_counts_roundtrip_through_the_wire_codec() {
+    let codec = FrameCodec::default();
+    let frame = Frame::data_with_tokens(
+        SessionId::new(),
+        StreamId::new(42),
+        FrameSeq::new(7),
+        LeaseEpoch::new(3),
+        Bytes::from_static(b"token-delta"),
+        2,
+    );
+
+    assert_eq!(codec.decode(&codec.encode(&frame).unwrap()).unwrap(), frame);
+}
+
+#[test]
 fn control_frames_roundtrip_without_payload_credit() {
     let codec = FrameCodec::default();
     let frame = Frame::control(
