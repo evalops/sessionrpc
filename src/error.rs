@@ -42,6 +42,9 @@ pub enum SessionRpcError {
     #[error("frame payload is too large: {0} bytes")]
     FrameTooLarge(usize),
 
+    #[error("no GPU placement is available for model {model_id}")]
+    PlacementUnavailable { model_id: String },
+
     #[error("transport is closed")]
     TransportClosed,
 }

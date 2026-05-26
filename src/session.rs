@@ -89,6 +89,15 @@ impl SessionRegistry {
         Ok(state.snapshot(session_id, state.client_id.clone()))
     }
 
+    pub fn lease(&self, session_id: SessionId) -> Result<GpuLease, SessionRpcError> {
+        let state = self
+            .sessions
+            .get(&session_id)
+            .ok_or(SessionRpcError::UnknownSession(session_id))?;
+
+        Ok(state.lease.clone())
+    }
+
     pub fn accept_frame(&mut self, frame: Frame) -> Result<AcceptedFrame, SessionRpcError> {
         let state = self
             .sessions
