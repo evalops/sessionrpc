@@ -10,6 +10,7 @@ mod gpu;
 mod ids;
 mod session;
 mod transport;
+mod wire;
 
 pub use error::SessionRpcError;
 pub use flow::FlowController;
@@ -18,3 +19,4 @@ pub use gpu::GpuLease;
 pub use ids::{ClientId, FrameSeq, LeaseEpoch, SessionId, StreamId};
 pub use session::{AcceptedFrame, OpenedSession, ResumedSession, SessionRegistry};
 pub use transport::{InMemoryEndpoint, in_memory_transport_pair};
+pub use wire::FrameCodec;
