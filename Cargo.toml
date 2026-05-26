@@ -1,0 +1,12 @@
+[package]
+name = "sessionrpc"
+version = "0.1.0"
+edition = "2024"
+description = "GPU-session-aware bidirectional streaming RPC for stateful inference fleets"
+license = "Apache-2.0"
+repository = "https://github.com/EvalOps/sessionrpc"
+readme = "README.md"
+keywords = ["rpc", "streaming", "inference", "gpu", "sessions"]
+categories = ["network-programming", "asynchronous"]
+
+[dependencies]
