@@ -9,6 +9,9 @@ readme = "README.md"
 keywords = ["rpc", "streaming", "inference", "gpu", "sessions"]
 categories = ["network-programming", "asynchronous"]
 
+[lib]
+crate-type = ["rlib", "cdylib", "staticlib"]
+
 [dependencies]
 axum = "0.8"
 bytes = "1.11"

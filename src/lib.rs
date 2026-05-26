@@ -4,6 +4,7 @@
 //! and scheduler-neutral session metadata.
 
 mod error;
+mod ffi;
 mod flow;
 mod frame;
 mod gpu;
@@ -19,6 +20,12 @@ mod transport;
 mod wire;
 
 pub use error::SessionRpcError;
+pub use ffi::{
+    SESSIONRPC_FRAME_CANCEL, SESSIONRPC_FRAME_DATA, SESSIONRPC_FRAME_END, SESSIONRPC_FRAME_OPEN,
+    SESSIONRPC_FRAME_PING, SessionRpcBuffer, SessionRpcBytes, SessionRpcDecodedFrame,
+    SessionRpcFrameView, SessionRpcStatus, sessionrpc_buffer_free, sessionrpc_decode_frame,
+    sessionrpc_decoded_frame_free, sessionrpc_encode_frame,
+};
 pub use flow::FlowController;
 pub use frame::{Frame, FrameKind};
 pub use gpu::GpuLease;
