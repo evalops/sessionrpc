@@ -31,6 +31,8 @@ This repository is in active bootstrap. The current crate includes:
   time at the protocol layer.
 - `FrameTracer` hooks and W3C `traceparent` propagation for OpenTelemetry-style
   frame spans.
+- `StickyRouteTable` and a small k8s sidecar example for turning session state
+  into sticky backend service decisions.
 - `FrameTransport`, `InMemoryEndpoint`, and a reusable conformance harness for
   local tests and future network transports.
 - `QuicFrameTransport` built on Quinn, including a 0-RTT resume path for flaky
@@ -78,4 +80,6 @@ See [docs/architecture.md](docs/architecture.md) for the current architecture,
 contract. See [docs/metering.md](docs/metering.md) for protocol-layer metering.
 See [docs/telemetry.md](docs/telemetry.md) for frame tracing.
 See [docs/quic.md](docs/quic.md) for the QUIC transport.
+See [docs/k8s-sticky-routing.md](docs/k8s-sticky-routing.md) for the k8s
+sidecar route table.
 See [bindings/typescript](bindings/typescript) for the browser/WebRTC client.
