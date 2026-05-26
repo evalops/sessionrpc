@@ -79,4 +79,11 @@ impl Frame {
             _ => None,
         }
     }
+
+    pub fn payload_len(&self) -> usize {
+        match &self.kind {
+            FrameKind::Data(payload) => payload.len(),
+            _ => 0,
+        }
+    }
 }

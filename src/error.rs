@@ -18,6 +18,15 @@ pub enum SessionRpcError {
         actual: FrameSeq,
     },
 
+    #[error(
+        "insufficient credit on stream {stream_id:?}: requested {requested}, available {available}"
+    )]
+    InsufficientCredit {
+        stream_id: StreamId,
+        requested: usize,
+        available: usize,
+    },
+
     #[error("transport is closed")]
     TransportClosed,
 }

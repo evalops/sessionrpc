@@ -4,6 +4,7 @@
 //! and scheduler-neutral session metadata.
 
 mod error;
+mod flow;
 mod frame;
 mod gpu;
 mod ids;
@@ -11,6 +12,7 @@ mod session;
 mod transport;
 
 pub use error::SessionRpcError;
+pub use flow::FlowController;
 pub use frame::{Frame, FrameKind};
 pub use gpu::GpuLease;
 pub use ids::{ClientId, FrameSeq, LeaseEpoch, SessionId, StreamId};
