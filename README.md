@@ -17,9 +17,17 @@ long-running inference sessions.
 
 ## Status
 
-This repository is in active bootstrap. The first usable milestone is a Rust
-library crate with an in-memory transport, session registry, frame protocol, and
-examples that model stateful GPU inference flows.
+This repository is in active bootstrap. The current crate includes:
+
+- `SessionRouter` for scheduler-backed open, resume, lease refresh, and routing.
+- `SessionRegistry` for affinity, reconnect state, and per-stream sequence
+  cursors.
+- `GpuScheduler`, `PlacementRequest`, and `GpuLease` for scheduler-neutral GPU
+  placement.
+- `Frame`, `FrameCodec`, and `FrameKind` for typed protocol frames and a binary
+  wire boundary.
+- `FlowController` for explicit per-stream byte credit.
+- `InMemoryEndpoint` for local tests and examples.
 
 ## Quick start
 
@@ -31,16 +39,18 @@ cargo run --example inference_session
 ```rust
 use bytes::Bytes;
 use sessionrpc::{
-    ClientId, Frame, FrameSeq, GpuLease, SessionRegistry, StreamId,
-    in_memory_transport_pair,
+    ClientId, Frame, FrameSeq, GpuLease, PlacementRequest, SessionRouter,
+    StaticGpuScheduler, StreamId,
 };
 
-let mut registry = SessionRegistry::default();
-let opened = registry.open_session(
-    ClientId::new("client-a"),
+let scheduler = StaticGpuScheduler::new(vec![
     GpuLease::new("worker-a", 0, "llama-70b", 1),
-);
-let (client, worker) = in_memory_transport_pair(32);
+]);
+let mut router = SessionRouter::new(scheduler, 1024 * 1024);
+let opened = router.open(
+    ClientId::new("client-a"),
+    PlacementRequest::new("llama-70b"),
+)?;
 
 let frame = Frame::data(
     opened.session_id,
@@ -49,7 +59,10 @@ let frame = Frame::data(
     opened.lease_epoch,
     Bytes::from_static(b"prompt bytes"),
 );
+
+let route = router.route_inbound(frame)?;
+assert_eq!(route.lease.worker_id, "worker-a");
 ```
 
 See [docs/architecture.md](docs/architecture.md) for the current architecture
-and extension points.
+and [docs/wire-format.md](docs/wire-format.md) for the binary frame format.
