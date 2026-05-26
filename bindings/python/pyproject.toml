@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sessionrpc"
+version = "0.1.0"
+description = "Python wire codec bindings for SessionRPC"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [{ name = "EvalOps" }]
+
+[tool.setuptools.packages.find]
+include = ["sessionrpc*"]

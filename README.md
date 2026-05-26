@@ -38,6 +38,7 @@ This repository is in active bootstrap. The current crate includes:
 - `QuicFrameTransport` built on Quinn, including a 0-RTT resume path for flaky
   mobile reconnects.
 - TypeScript bindings with a browser `RTCDataChannel` transport.
+- Python bindings for dependency-free wire codec clients and fixtures.
 - C ABI bindings for frame encode/decode at the wire boundary.
 
 ## Quick start
@@ -84,4 +85,5 @@ See [docs/quic.md](docs/quic.md) for the QUIC transport.
 See [docs/k8s-sticky-routing.md](docs/k8s-sticky-routing.md) for the k8s
 sidecar route table.
 See [bindings/typescript](bindings/typescript) for the browser/WebRTC client.
+See [bindings/python](bindings/python) for the Python wire codec.
 See [bindings/c](bindings/c) for the C ABI.
