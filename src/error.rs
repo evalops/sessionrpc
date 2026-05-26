@@ -42,6 +42,12 @@ pub enum SessionRpcError {
     #[error("frame payload is too large: {0} bytes")]
     FrameTooLarge(usize),
 
+    #[error("frame trace context is too large: {0} bytes")]
+    TraceContextTooLarge(usize),
+
+    #[error("invalid trace context")]
+    InvalidTraceContext,
+
     #[error("no GPU placement is available for model {model_id}")]
     PlacementUnavailable { model_id: String },
 

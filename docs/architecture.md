@@ -45,6 +45,14 @@ instead of reconstructing it later from logs. The default router uses
 `NoopMeter`; callers can install an `InMemoryMeter` for tests or their own sink
 for billing, quota, cost attribution, or usage analytics.
 
+### FrameTracer
+
+`FrameTracer` records one span-shaped event for each successfully routed frame.
+Frames can carry a W3C `traceparent`, and `FrameCodec` preserves it across the
+wire. Exporters can map `FrameSpan` into OpenTelemetry spans with stable fields
+for session id, stream id, lease epoch, worker id, GPU ordinal, model id,
+payload bytes, and token count.
+
 ### GpuScheduler and SessionRouter
 
 `GpuScheduler` is the scheduler integration point. Implementations turn a
@@ -86,3 +94,4 @@ explicit close/error behavior, bounded buffering, and no frame mutation.
 - Auth hooks for binding session ids and resume tokens to callers.
 - Exporters that forward `MeteringSink` events into billing systems and
   warehouse pipelines.
+- OpenTelemetry exporters that bridge `FrameTracer` spans into tracing backends.

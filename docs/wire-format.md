@@ -14,7 +14,9 @@ payload. Integers are big-endian.
 | 34 | 8 | Frame sequence |
 | 42 | 8 | Lease epoch |
 | 50 | 8 | Token count, or `u64::MAX` when absent |
-| 58 | N | Payload bytes |
+| 58 | 2 | Trace context length |
+| 60 | N | Trace context bytes |
+| 60 + N | M | Payload bytes |
 
 ## Frame Kinds
 
@@ -32,3 +34,6 @@ The decoder rejects invalid magic bytes, unsupported versions, unknown frame
 kinds, truncated frames, and payload lengths above the configured maximum. This
 lets network transports fail malformed input before it reaches routing or GPU
 dispatch.
+
+Trace context bytes carry an optional W3C `traceparent` string. The protocol core
+does not require a specific OpenTelemetry exporter.

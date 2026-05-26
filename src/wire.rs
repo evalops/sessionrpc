@@ -1,10 +1,12 @@
 use bytes::Bytes;
 
-use crate::{Frame, FrameKind, FrameSeq, LeaseEpoch, SessionId, SessionRpcError, StreamId};
+use crate::{
+    Frame, FrameKind, FrameSeq, LeaseEpoch, SessionId, SessionRpcError, StreamId, TraceContext,
+};
 
 const MAGIC: &[u8; 4] = b"SRP1";
 const VERSION: u8 = 1;
-const HEADER_LEN: usize = 58;
+const HEADER_LEN: usize = 60;
 const TOKEN_COUNT_NONE: u64 = u64::MAX;
 
 #[derive(Clone, Debug)]
@@ -30,8 +32,15 @@ impl FrameCodec {
         if payload.len() > self.max_payload_len || payload.len() > u32::MAX as usize {
             return Err(SessionRpcError::FrameTooLarge(payload.len()));
         }
+        let trace_context = frame
+            .trace_context()
+            .map(|context| context.traceparent().as_bytes())
+            .unwrap_or_default();
+        if trace_context.len() > u16::MAX as usize {
+            return Err(SessionRpcError::TraceContextTooLarge(trace_context.len()));
+        }
 
-        let mut encoded = Vec::with_capacity(HEADER_LEN + payload.len());
+        let mut encoded = Vec::with_capacity(HEADER_LEN + trace_context.len() + payload.len());
         encoded.extend_from_slice(MAGIC);
         encoded.push(VERSION);
         encoded.push(kind_to_u8(frame.kind()));
@@ -46,6 +55,8 @@ impl FrameCodec {
                 .unwrap_or(TOKEN_COUNT_NONE)
                 .to_be_bytes(),
         );
+        encoded.extend_from_slice(&(trace_context.len() as u16).to_be_bytes());
+        encoded.extend_from_slice(trace_context);
         encoded.extend_from_slice(&payload);
 
         Ok(Bytes::from(encoded))
@@ -78,7 +89,8 @@ impl FrameCodec {
             return Err(SessionRpcError::FrameTooLarge(payload_len));
         }
 
-        let needed = HEADER_LEN + payload_len;
+        let trace_len = u16::from_be_bytes(encoded[58..60].try_into().expect("slice len")) as usize;
+        let needed = HEADER_LEN + trace_len + payload_len;
         if encoded.len() < needed {
             return Err(SessionRpcError::TruncatedFrame {
                 needed,
@@ -97,7 +109,15 @@ impl FrameCodec {
             encoded[42..50].try_into().expect("slice len"),
         ));
         let token_count = u64::from_be_bytes(encoded[50..58].try_into().expect("slice len"));
-        let payload = Bytes::copy_from_slice(&encoded[58..needed]);
+        let trace_context = if trace_len == 0 {
+            None
+        } else {
+            Some(TraceContext::new(
+                std::str::from_utf8(&encoded[60..60 + trace_len])
+                    .map_err(|_| SessionRpcError::InvalidTraceContext)?,
+            ))
+        };
+        let payload = Bytes::copy_from_slice(&encoded[60 + trace_len..needed]);
 
         let frame = match kind {
             0 if token_count == TOKEN_COUNT_NONE => {
@@ -118,7 +138,10 @@ impl FrameCodec {
             unknown => return Err(SessionRpcError::UnknownFrameKind(unknown)),
         };
 
-        Ok(frame)
+        Ok(match trace_context {
+            Some(trace_context) => frame.with_trace_context(trace_context),
+            None => frame,
+        })
     }
 }
 

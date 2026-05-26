@@ -1,6 +1,6 @@
 use bytes::Bytes;
 
-use crate::{FrameSeq, LeaseEpoch, SessionId, StreamId};
+use crate::{FrameSeq, LeaseEpoch, SessionId, StreamId, TraceContext};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Frame {
@@ -9,6 +9,7 @@ pub struct Frame {
     seq: FrameSeq,
     lease_epoch: LeaseEpoch,
     token_count: Option<u64>,
+    trace_context: Option<TraceContext>,
     kind: FrameKind,
 }
 
@@ -35,6 +36,7 @@ impl Frame {
             seq,
             lease_epoch,
             token_count: None,
+            trace_context: None,
             kind: FrameKind::Data(payload),
         }
     }
@@ -53,6 +55,7 @@ impl Frame {
             seq,
             lease_epoch,
             token_count: Some(token_count),
+            trace_context: None,
             kind: FrameKind::Data(payload),
         }
     }
@@ -70,8 +73,14 @@ impl Frame {
             seq,
             lease_epoch,
             token_count: None,
+            trace_context: None,
             kind,
         }
+    }
+
+    pub fn with_trace_context(mut self, trace_context: TraceContext) -> Self {
+        self.trace_context = Some(trace_context);
+        self
     }
 
     pub fn session_id(&self) -> SessionId {
@@ -96,6 +105,10 @@ impl Frame {
 
     pub fn token_count(&self) -> Option<u64> {
         self.token_count
+    }
+
+    pub fn trace_context(&self) -> Option<&TraceContext> {
+        self.trace_context.as_ref()
     }
 
     pub fn payload(&self) -> Option<Bytes> {

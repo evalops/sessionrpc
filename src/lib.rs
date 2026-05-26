@@ -12,6 +12,7 @@ mod metering;
 mod router;
 mod scheduler;
 mod session;
+mod telemetry;
 mod transport;
 mod wire;
 
@@ -24,6 +25,7 @@ pub use metering::{InMemoryMeter, MeteringEvent, MeteringSink, MeteringSnapshot,
 pub use router::SessionRouter;
 pub use scheduler::{GpuScheduler, PlacementRequest, StaticGpuScheduler};
 pub use session::{AcceptedFrame, OpenedSession, ResumedSession, SessionRegistry};
+pub use telemetry::{FrameSpan, FrameTracer, InMemoryFrameTracer, NoopFrameTracer, TraceContext};
 pub use transport::{
     FrameTransport, InMemoryEndpoint, assert_transport_conformance, in_memory_transport_pair,
 };
