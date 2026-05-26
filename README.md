@@ -27,7 +27,8 @@ This repository is in active bootstrap. The current crate includes:
 - `Frame`, `FrameCodec`, and `FrameKind` for typed protocol frames and a binary
   wire boundary.
 - `FlowController` for explicit per-stream byte credit.
-- `InMemoryEndpoint` for local tests and examples.
+- `FrameTransport`, `InMemoryEndpoint`, and a reusable conformance harness for
+  local tests and future network transports.
 
 ## Quick start
 
@@ -64,5 +65,7 @@ let route = router.route_inbound(frame)?;
 assert_eq!(route.lease.worker_id, "worker-a");
 ```
 
-See [docs/architecture.md](docs/architecture.md) for the current architecture
-and [docs/wire-format.md](docs/wire-format.md) for the binary frame format.
+See [docs/architecture.md](docs/architecture.md) for the current architecture,
+[docs/wire-format.md](docs/wire-format.md) for the binary frame format, and
+[docs/transport-conformance.md](docs/transport-conformance.md) for the transport
+contract.

@@ -22,5 +22,7 @@ pub use ids::{ClientId, FrameSeq, LeaseEpoch, SessionId, StreamId};
 pub use router::SessionRouter;
 pub use scheduler::{GpuScheduler, PlacementRequest, StaticGpuScheduler};
 pub use session::{AcceptedFrame, OpenedSession, ResumedSession, SessionRegistry};
-pub use transport::{InMemoryEndpoint, in_memory_transport_pair};
+pub use transport::{
+    FrameTransport, InMemoryEndpoint, assert_transport_conformance, in_memory_transport_pair,
+};
 pub use wire::FrameCodec;
