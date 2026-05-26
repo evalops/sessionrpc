@@ -66,7 +66,17 @@ where
     T: FrameTransport,
     Make: FnOnce() -> (T, T),
 {
-    let (mut client, mut worker) = make_pair();
+    let (client, worker) = make_pair();
+    assert_transport_conformance_pair(client, worker).await
+}
+
+pub async fn assert_transport_conformance_pair<T>(
+    mut client: T,
+    mut worker: T,
+) -> Result<(), SessionRpcError>
+where
+    T: FrameTransport,
+{
     let session_id = SessionId::new();
     let lease_epoch = LeaseEpoch::new(1);
     let client_first = Frame::data(
