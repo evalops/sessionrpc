@@ -20,3 +20,36 @@ long-running inference sessions.
 This repository is in active bootstrap. The first usable milestone is a Rust
 library crate with an in-memory transport, session registry, frame protocol, and
 examples that model stateful GPU inference flows.
+
+## Quick start
+
+```bash
+cargo test
+cargo run --example inference_session
+```
+
+```rust
+use bytes::Bytes;
+use sessionrpc::{
+    ClientId, Frame, FrameSeq, GpuLease, SessionRegistry, StreamId,
+    in_memory_transport_pair,
+};
+
+let mut registry = SessionRegistry::default();
+let opened = registry.open_session(
+    ClientId::new("client-a"),
+    GpuLease::new("worker-a", 0, "llama-70b", 1),
+);
+let (client, worker) = in_memory_transport_pair(32);
+
+let frame = Frame::data(
+    opened.session_id,
+    StreamId::new(1),
+    FrameSeq::new(0),
+    opened.lease_epoch,
+    Bytes::from_static(b"prompt bytes"),
+);
+```
+
+See [docs/architecture.md](docs/architecture.md) for the current architecture
+and extension points.
