@@ -37,6 +37,14 @@ from any one transport so network adapters can connect it to HTTP/2 windows,
 QUIC stream credit, WebRTC data-channel buffering, or fleet-specific admission
 signals.
 
+### MeteringSink
+
+`MeteringSink` records accepted protocol events after routing succeeds. This
+keeps frame, byte, token, and session-time accounting next to the frame protocol
+instead of reconstructing it later from logs. The default router uses
+`NoopMeter`; callers can install an `InMemoryMeter` for tests or their own sink
+for billing, quota, cost attribution, or usage analytics.
+
 ### GpuScheduler and SessionRouter
 
 `GpuScheduler` is the scheduler integration point. Implementations turn a
@@ -76,3 +84,5 @@ explicit close/error behavior, bounded buffering, and no frame mutation.
 - Production scheduler adapters for Kubernetes, Slurm, Ray, or custom GPU
   allocators.
 - Auth hooks for binding session ids and resume tokens to callers.
+- Exporters that forward `MeteringSink` events into billing systems and
+  warehouse pipelines.
