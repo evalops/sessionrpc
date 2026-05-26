@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sessionrpc-router
+  labels:
+    app.kubernetes.io/name: sessionrpc-router
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sessionrpc-router
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sessionrpc-router
+    spec:
+      containers:
+        - name: router
+          image: ghcr.io/evalops/sessionrpc-router:latest
+          ports:
+            - name: rpc
+              containerPort: 8443
+          env:
+            - name: SESSIONRPC_STICKY_SIDECAR_URL
+              value: http://127.0.0.1:8080
+        - name: sticky-router
+          image: ghcr.io/evalops/sessionrpc-sticky-router:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SESSIONRPC_BIND_ADDR
+              value: 0.0.0.0:8080
+            - name: SESSIONRPC_BACKEND_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SESSIONRPC_WORKER_SERVICE_PREFIX
+              value: sessionrpc-worker
+            - name: SESSIONRPC_WORKER_PORT
+              value: "8080"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sessionrpc-router
+  labels:
+    app.kubernetes.io/name: sessionrpc-router
+spec:
+  selector:
+    app.kubernetes.io/name: sessionrpc-router
+  ports:
+    - name: rpc
+      port: 8443
+      targetPort: rpc

@@ -32,6 +32,14 @@ pub struct AcceptedFrame {
     pub lease: GpuLease,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SessionSnapshot {
+    pub session_id: SessionId,
+    pub client_id: ClientId,
+    pub lease: GpuLease,
+    pub lease_epoch: crate::LeaseEpoch,
+}
+
 #[derive(Clone, Debug)]
 struct SessionState {
     client_id: ClientId,
@@ -96,6 +104,18 @@ impl SessionRegistry {
             .ok_or(SessionRpcError::UnknownSession(session_id))?;
 
         Ok(state.lease.clone())
+    }
+
+    pub fn snapshots(&self) -> Vec<SessionSnapshot> {
+        self.sessions
+            .iter()
+            .map(|(session_id, state)| SessionSnapshot {
+                session_id: *session_id,
+                client_id: state.client_id.clone(),
+                lease: state.lease.clone(),
+                lease_epoch: state.lease.epoch,
+            })
+            .collect()
     }
 
     pub fn accept_frame(&mut self, frame: Frame) -> Result<AcceptedFrame, SessionRpcError> {

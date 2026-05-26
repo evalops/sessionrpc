@@ -8,6 +8,7 @@ mod flow;
 mod frame;
 mod gpu;
 mod ids;
+mod k8s;
 mod metering;
 mod quic;
 mod router;
@@ -22,11 +23,12 @@ pub use flow::FlowController;
 pub use frame::{Frame, FrameKind};
 pub use gpu::GpuLease;
 pub use ids::{ClientId, FrameSeq, LeaseEpoch, SessionId, StreamId};
+pub use k8s::{K8sRoutePolicy, StickyRouteDecision, StickyRouteTable};
 pub use metering::{InMemoryMeter, MeteringEvent, MeteringSink, MeteringSnapshot, NoopMeter};
 pub use quic::{QuicClient, QuicFrameTransport, QuicResumeConnection, QuicTestServer};
 pub use router::SessionRouter;
 pub use scheduler::{GpuScheduler, PlacementRequest, StaticGpuScheduler};
-pub use session::{AcceptedFrame, OpenedSession, ResumedSession, SessionRegistry};
+pub use session::{AcceptedFrame, OpenedSession, ResumedSession, SessionRegistry, SessionSnapshot};
 pub use telemetry::{FrameSpan, FrameTracer, InMemoryFrameTracer, NoopFrameTracer, TraceContext};
 pub use transport::{
     FrameTransport, InMemoryEndpoint, assert_transport_conformance,
