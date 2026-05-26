@@ -22,6 +22,14 @@ impl SessionId {
     pub fn new() -> Self {
         Self(Uuid::new_v4())
     }
+
+    pub fn from_bytes(bytes: [u8; 16]) -> Self {
+        Self(Uuid::from_bytes(bytes))
+    }
+
+    pub fn to_bytes(self) -> [u8; 16] {
+        *self.0.as_bytes()
+    }
 }
 
 impl Default for SessionId {
@@ -49,6 +57,10 @@ impl StreamId {
     pub fn new(value: u64) -> Self {
         Self(value)
     }
+
+    pub fn get(self) -> u64 {
+        self.0
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
@@ -57,6 +69,10 @@ pub struct FrameSeq(u64);
 impl FrameSeq {
     pub fn new(value: u64) -> Self {
         Self(value)
+    }
+
+    pub fn get(self) -> u64 {
+        self.0
     }
 
     pub fn next(self) -> Self {
@@ -70,5 +86,9 @@ pub struct LeaseEpoch(u64);
 impl LeaseEpoch {
     pub fn new(value: u64) -> Self {
         Self(value)
+    }
+
+    pub fn get(self) -> u64 {
+        self.0
     }
 }

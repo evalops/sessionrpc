@@ -27,6 +27,21 @@ pub enum SessionRpcError {
         available: usize,
     },
 
+    #[error("invalid frame magic")]
+    InvalidFrameMagic,
+
+    #[error("unsupported frame version: supported {supported}, got {actual}")]
+    UnsupportedFrameVersion { supported: u8, actual: u8 },
+
+    #[error("unknown frame kind {0}")]
+    UnknownFrameKind(u8),
+
+    #[error("truncated frame: needed {needed} bytes, got {actual}")]
+    TruncatedFrame { needed: usize, actual: usize },
+
+    #[error("frame payload is too large: {0} bytes")]
+    FrameTooLarge(usize),
+
     #[error("transport is closed")]
     TransportClosed,
 }
