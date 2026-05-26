@@ -1,0 +1,16 @@
+{
+  "name": "@evalops/sessionrpc",
+  "version": "0.1.0",
+  "description": "TypeScript client binding and browser WebRTC transport for sessionrpc",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/test/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "typescript": "^5.9.3"
+  }
+}

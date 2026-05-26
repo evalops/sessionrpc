@@ -35,6 +35,7 @@ This repository is in active bootstrap. The current crate includes:
   local tests and future network transports.
 - `QuicFrameTransport` built on Quinn, including a 0-RTT resume path for flaky
   mobile reconnects.
+- TypeScript bindings with a browser `RTCDataChannel` transport.
 
 ## Quick start
 
@@ -77,3 +78,4 @@ See [docs/architecture.md](docs/architecture.md) for the current architecture,
 contract. See [docs/metering.md](docs/metering.md) for protocol-layer metering.
 See [docs/telemetry.md](docs/telemetry.md) for frame tracing.
 See [docs/quic.md](docs/quic.md) for the QUIC transport.
+See [bindings/typescript](bindings/typescript) for the browser/WebRTC client.
